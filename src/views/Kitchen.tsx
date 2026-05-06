@@ -9,7 +9,7 @@ import html2canvas from 'html2canvas';
 export const KitchenView: React.FC<{ setView: (v: string) => void; onCook: (r: any) => void }> = ({ setView, onCook }) => {
   const { favorites, profile, fingerprint, toggleFavorite, history } = useStore();
   const level = getLevel(profile.cookCount);
-  const [activeTab, setActiveTab] = useState<'favs' | 'profile' | 'history'>('favs');
+  const [activeTab, setActiveTab] = useState<'favs' | 'profile' | 'history' | 'collaboration'>('favs');
 
   const shareFingerprint = async () => {
     const el = document.getElementById('fingerprint-card');
@@ -49,6 +49,12 @@ export const KitchenView: React.FC<{ setView: (v: string) => void; onCook: (r: a
             className={`px-6 py-2 rounded-2xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'history' ? "bg-white text-brand-red shadow-sm" : "text-gray-400 font-bold"}`}
           >
             History
+          </button>
+          <button 
+            onClick={() => setActiveTab('collaboration')}
+            className={`px-6 py-2 rounded-2xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'collaboration' ? "bg-white text-brand-red shadow-sm" : "text-gray-400 font-bold"}`}
+          >
+            Groups
           </button>
         </div>
       </div>
@@ -175,6 +181,46 @@ export const KitchenView: React.FC<{ setView: (v: string) => void; onCook: (r: a
                 <p className="font-black text-gray-400 uppercase tracking-widest text-sm">No scan history</p>
               </div>
             )}
+          </motion.div>
+        )}
+        {activeTab === 'collaboration' && (
+          <motion.div 
+            key="collab"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-8"
+          >
+            <Card className="p-8 border-2 border-brand-teal/20 bg-brand-teal/5">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 bg-brand-teal rounded-2xl flex items-center justify-center text-white">
+                  <Share2 size={24} />
+                </div>
+                <div>
+                  <h3 className="font-black uppercase">Cook Together</h3>
+                  <p className="text-xs text-gray-500">Shared Indian Kitchen</p>
+                </div>
+              </div>
+              <p className="text-sm font-medium text-gray-600 mb-8">
+                Host a virtual session to merge your pantry with friends. Find recipes that use everyone's ingredients!
+              </p>
+              <Button variant="teal" className="w-full">Create Lobby</Button>
+            </Card>
+
+            <Card className="p-8 border-2 border-brand-red/20 bg-brand-red/5">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 bg-brand-red rounded-2xl flex items-center justify-center text-white">
+                  <Heart size={24} />
+                </div>
+                <div>
+                  <h3 className="font-black uppercase">Family Pantry</h3>
+                  <p className="text-xs text-gray-500">Sync with Home</p>
+                </div>
+              </div>
+              <p className="text-sm font-medium text-gray-600 mb-8">
+                Sync with your family members' phones to automatically update inventory whenever someone shops.
+              </p>
+              <Button variant="secondary" className="w-full">Link Account</Button>
+            </Card>
           </motion.div>
         )}
       </AnimatePresence>

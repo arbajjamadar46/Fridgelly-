@@ -1,7 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 import { Ingredient, Recipe, PalateFingerprint } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "AIzaSyA10cfV2CrcEl-tEv0QanwFL2veOLm9MmM" });
 const MODEL_NAME = "gemini-2.0-flash";
 
 export const geminiService = {

@@ -45,7 +45,15 @@ export const HomeView: React.FC<{ setView: (v: string) => void; onCook: (r: Reci
             <p className="text-gray-500 font-medium">Ready to transform your fridge content into magic?</p>
           </div>
           
-          <div className="flex gap-3">
+          <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto">
+            <div className="relative flex-1 md:w-64">
+              <input 
+                type="text" 
+                placeholder="Search recipes..." 
+                className="w-full bg-white rounded-2xl py-3 pl-12 pr-4 font-bold text-sm shadow-sm border border-gray-100 focus:ring-4 focus:ring-brand-red/5 outline-none"
+              />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            </div>
             <Button variant="secondary" className="flex-1 md:flex-none" onClick={() => setView('scan')}>
               <Scan size={18} /> Scan Fridge
             </Button>
