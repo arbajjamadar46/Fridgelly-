@@ -1,0 +1,6 @@
+{
+  "name": "Fridgelly",
+  "description": "High-end AI-powered smart culinary assistant featuring multimodal fridge scanning, real-time recipe morphing, and personalized palate fingerprints.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": []
+}
