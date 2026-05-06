@@ -7,7 +7,7 @@ export const Sidebar: React.FC<{ setView: (v: string) => void }> = ({ setView })
   const { profile, updateFilters, history } = useStore();
 
   const dietaryOptions = [
-    "Vegetarian", "Keto", "Vegan", "Gluten-Free", "Paleo", "High-Protein"
+    "Pure Veg", "Jain", "Vegan", "High-Protein", "Keto", "Gluten-Free"
   ];
 
   return (

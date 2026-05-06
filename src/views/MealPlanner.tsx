@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { useStore } from '../lib/store';
 import { motion, AnimatePresence } from 'motion/react';
 import { Button, Card, Badge } from '../components/ui/Base';
-import { ChevronLeft, Plus, Download, Trash2, Calendar, MoreVertical } from 'lucide-react';
+import { ChevronLeft, Plus, Download, Trash2, Calendar, MoreVertical, Check } from 'lucide-react';
 import { Recipe } from '../types';
 
 export const MealPlannerView: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const { mealPlan, favorites, updateMealPlan } = useStore();
+  const [copied, setCopied] = useState(false);
   const days = Object.keys(mealPlan);
   const slots = ['breakfast', 'lunch', 'dinner'] as const;
 
@@ -21,7 +22,8 @@ export const MealPlannerView: React.FC<{ onBack: () => void }> = ({ onBack }) =>
       text += "\n";
     });
     navigator.clipboard.writeText(text);
-    alert('Plan copied to clipboard!');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -37,8 +39,8 @@ export const MealPlannerView: React.FC<{ onBack: () => void }> = ({ onBack }) =>
           </div>
         </div>
 
-        <Button variant="secondary" onClick={exportPlan}>
-          <Download size={18} /> Export Plan
+        <Button variant={copied ? "teal" : "secondary"} onClick={exportPlan}>
+          {copied ? <><Check size={18} /> Copied</> : <><Download size={18} /> Export Plan</>}
         </Button>
       </div>
 

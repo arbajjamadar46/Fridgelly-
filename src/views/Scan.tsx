@@ -11,7 +11,6 @@ export const ScanView: React.FC<{ setView: (v: string) => void }> = ({ setView }
   const [image, setImage] = useState<string | null>(null);
   const [scanning, setScanning] = useState(false);
   const [results, setResults] = useState<Ingredient[]>([]);
-  const [mode, setMode] = useState<'fridge' | 'dish'>('fridge');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,20 +26,8 @@ export const ScanView: React.FC<{ setView: (v: string) => void }> = ({ setView }
     if (!image) return;
     setScanning(true);
     try {
-      if (mode === 'fridge') {
-        const ingredients = await geminiService.analyzeFridgeImage(image);
-        setResults(ingredients);
-      } else {
-        const decoded = await geminiService.decodeDish(image, []);
-        // For dish vision, we navigate directly to cooking or recipe detail
-        // For this demo, let's just show ingredients found
-        setResults(decoded.ingredients.available.map(name => ({
-          id: Math.random().toString(36).substr(2, 9),
-          name,
-          confidence: 90,
-          category: 'decoded'
-        })));
-      }
+      const ingredients = await geminiService.analyzeFridgeImage(image);
+      setResults(ingredients);
     } catch (error) {
       console.error(error);
     } finally {
@@ -56,32 +43,13 @@ export const ScanView: React.FC<{ setView: (v: string) => void }> = ({ setView }
   };
 
   return (
-    <div className="max-w-2xl mx-auto py-10">
+    <div className="max-w-2xl mx-auto py-10 px-4">
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-3xl font-black uppercase tracking-tight">
-          {mode === 'fridge' ? 'Scan Fridge' : 'Decode Dish'}
+          Scan Fridge
         </h2>
         <button onClick={() => setView('home')} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
           <X size={24} />
-        </button>
-      </div>
-
-      <div className="flex gap-4 mb-8">
-        <button 
-          onClick={() => setMode('fridge')}
-          className={`flex-1 py-4 rounded-3xl font-black uppercase tracking-widest text-xs transition-all border-2 ${
-            mode === 'fridge' ? "border-brand-red bg-brand-red text-white" : "border-gray-100 text-gray-400"
-          }`}
-        >
-          Fridge Scan
-        </button>
-        <button 
-          onClick={() => setMode('dish')}
-          className={`flex-1 py-4 rounded-3xl font-black uppercase tracking-widest text-xs transition-all border-2 ${
-            mode === 'dish' ? "border-brand-teal bg-brand-teal text-white" : "border-gray-100 text-gray-400"
-          }`}
-        >
-          Dish Vision
         </button>
       </div>
 

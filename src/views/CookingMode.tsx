@@ -136,7 +136,7 @@ export const CookingModeView: React.FC<{ recipe: Recipe; onBack: () => void }> =
           </div>
         </div>
 
-        <div className="flex-1 space-y-12 mb-20">
+        <div className="flex-1 space-y-12 mb-36">
           <section>
             <h3 className="text-xs font-black uppercase tracking-widest text-gray-400 mb-4 px-2">Preparation Checklist</h3>
             <div className="flex flex-wrap gap-2">

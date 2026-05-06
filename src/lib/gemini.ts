@@ -1,8 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
 import { Ingredient, Recipe, PalateFingerprint } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "YOUR_GEMINI_API_KEY" });
-const MODEL_NAME = "gemini-2.0-flash"; // User specifically requested 2.0 Flash
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+const MODEL_NAME = "gemini-2.0-flash";
 
 export const geminiService = {
   async analyzeFridgeImage(base64Image: string): Promise<Ingredient[]> {
@@ -35,9 +35,10 @@ export const geminiService = {
   },
 
   async generateRecipes(ingredients: string[], filters: string[], cuisine: string): Promise<Recipe[]> {
-    const prompt = `Generate 4 creative recipes using primarily these ingredients: ${ingredients.join(", ")}. 
-    Dietary restrictions: ${filters.join(", ") || "None"}. 
-    Cuisine style: ${cuisine}. 
+    const prompt = `Generate 4 creative Indian regional recipes using primarily these ingredients: ${ingredients.join(", ")}. 
+    Dietary restrictions: ${filters.join(", ") || "Vegetarian (Default Indian context)"}. 
+    Specific Indian regional style: ${cuisine}. 
+    Focus on authentic Indian flavors, spices, and local home-style cooking techniques.
     Return ONLY a JSON array, each item: { "title": "string", "matchScore": number, "cookTime": "string", "difficulty": "Easy|Medium|Hard", "calories": number, "description": "string", "ingredients": { "available": ["string"], "missing": ["string"] }, "steps": ["string"], "nutritionFacts": { "calories": number, "protein": number, "carbs": number, "fat": number, "fiber": number }, "tags": ["string"] }. 
     No markdown, no explanation.`;
 
@@ -124,7 +125,8 @@ export const geminiService = {
   },
 
   async generatePalateFingerprint(history: any[]): Promise<PalateFingerprint> {
-    const prompt = `Based on cooking history: ${JSON.stringify(history)}, describe this user's taste profile. 
+    const prompt = `Based on cooking history: ${JSON.stringify(history)}, describe this user's Indian taste profile. 
+    Use Indian culinary terms and personas (e.g., "Masala Maestro", "Curry Connoisseur").
     Return ONLY JSON: { "flavorProfile": ["string"], "texturePrefs": ["string"], "cookingPersona": "string", "poeticTagline": "string" }.
     No markdown, no explanation.`;
     

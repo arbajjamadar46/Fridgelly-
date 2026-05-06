@@ -41,7 +41,7 @@ export const ShoppingListView: React.FC = () => {
               type="text" 
               value={newItem}
               onChange={(e) => setNewItem(e.target.value)}
-              placeholder="Add milk, eggs, flour..."
+              placeholder="Add Paneer, Atta, Masala..."
               className="w-full bg-gray-50 border-none rounded-2xl py-4 pl-12 pr-4 font-bold text-sm focus:ring-2 focus:ring-brand-red/20"
             />
             <Plus className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />

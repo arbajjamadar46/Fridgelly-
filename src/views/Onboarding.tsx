@@ -4,8 +4,8 @@ import { useStore } from '../lib/store';
 import { Button, Card } from '../components/ui/Base';
 import { ChevronRight, Check, Bell, Utensils, Heart } from 'lucide-react';
 
-const DIETARY = ["Vegetarian", "Keto", "Vegan", "Gluten-Free", "Paleo", "High-Protein"];
-const CUISINES = ["Indian", "Italian", "Mexican", "Chinese", "Mediterranean", "Japanese", "American", "Thai", "Middle Eastern"];
+const DIETARY = ["Pure Veg", "Jain", "Vegan", "High-Protein", "Keto", "Gluten-Free"];
+const CUISINES = ["South Indian", "Punjabi", "Bengali", "Rajasthani", "Maharashtrian", "Gujarati", "Indo-Chinese", "Mughlai", "Coastal"];
 
 export const OnboardingView: React.FC = () => {
   const [step, setStep] = useState(0);

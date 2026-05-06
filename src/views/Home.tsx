@@ -9,9 +9,9 @@ import { Recipe } from '../types';
 export const HomeView: React.FC<{ setView: (v: string) => void; onCook: (r: Recipe) => void }> = ({ setView, onCook }) => {
   const { profile, inventory, updateCuisines, recipes, setRecipes, favorites, toggleFavorite, addToShopping } = useStore();
   const [loading, setLoading] = useState(false);
-  const [activeCuisine, setActiveCuisine] = useState(profile.favoriteCuisines[0] || 'Indian');
+  const [activeCuisine, setActiveCuisine] = useState(profile.favoriteCuisines[0] || 'South Indian');
 
-  const CUISINES = ["Indian", "Italian", "Mexican", "Chinese", "Mediterranean", "Japanese", "American", "Thai", "Middle Eastern"];
+  const CUISINES = ["South Indian", "Punjabi", "Bengali", "Rajasthani", "Maharashtrian", "Gujarati", "Indo-Chinese", "Mughlai", "Coastal"];
 
   const generate = async () => {
     if (inventory.length === 0) return;
@@ -48,9 +48,6 @@ export const HomeView: React.FC<{ setView: (v: string) => void; onCook: (r: Reci
           <div className="flex gap-3">
             <Button variant="secondary" className="flex-1 md:flex-none" onClick={() => setView('scan')}>
               <Scan size={18} /> Scan Fridge
-            </Button>
-            <Button variant="outline" className="flex-1 md:flex-none" onClick={() => setView('scan')}>
-              <Camera size={18} /> Dish Vision
             </Button>
           </div>
         </div>

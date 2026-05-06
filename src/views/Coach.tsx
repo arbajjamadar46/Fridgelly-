@@ -14,11 +14,11 @@ export const CoachView: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const goalIcons: any = {
-    "Lose weight": <Waves />,
-    "Build muscle": <Zap />,
-    "Eat cleaner": <Sparkles />,
-    "Reduce waste": <Trash2 />,
-    "Cook more variety": <Target />,
+    "Soft Roti": <Waves />,
+    "Perfect Tadka": <Zap />,
+    "Street Food": <Sparkles />,
+    "Healthy Tiffin": <Trash2 />,
+    "Party Snacks": <Target />,
   };
 
   const handleSend = async (e: React.FormEvent) => {
@@ -52,26 +52,19 @@ export const CoachView: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto h-[calc(100vh-12rem)] flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+    <div className="max-w-4xl mx-auto flex flex-col h-[calc(100vh-180px)] md:h-[calc(100vh-220px)] gap-4 md:gap-6 overflow-hidden">
+      <div className="flex items-center justify-between flex-shrink-0 px-2 md:px-0">
         <div>
-          <h2 className="text-4xl font-black uppercase tracking-tight mb-1">Fridgelly Coach</h2>
+          <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight mb-1">Coach</h2>
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-brand-teal animate-pulse" />
-            <p className="text-xs font-black text-brand-teal uppercase tracking-widest">Active & Ready</p>
+            <p className="text-[10px] font-black text-brand-teal uppercase tracking-widest">Active & Ready</p>
           </div>
-        </div>
-        
-        <div className="hidden md:flex gap-3">
-          <Card className="flex items-center gap-4 py-3 px-6 h-auto">
-             <div className="text-brand-red font-black text-2xl">84</div>
-             <div className="text-[10px] font-black uppercase text-gray-400">Coach<br/>Score</div>
-          </Card>
         </div>
       </div>
 
-      <div className="flex-1 bg-white/40 rounded-[40px] border border-white/60 glass overflow-hidden flex flex-col shadow-xl">
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+      <div className="flex-1 bg-white/40 rounded-[32px] md:rounded-[40px] border border-white/60 glass overflow-hidden flex flex-col shadow-xl min-h-0">
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 scroll-smooth">
           <AnimatePresence>
             {messages.map((msg, i) => (
               <motion.div
@@ -111,13 +104,13 @@ export const CoachView: React.FC = () => {
           </AnimatePresence>
         </div>
 
-        <form onSubmit={handleSend} className="p-4 bg-white/60 border-t border-white/20">
+        <form onSubmit={handleSend} className="p-4 bg-white/60 border-t border-white/20 flex-shrink-0">
           <div className="flex gap-2 relative">
             <input 
               type="text" 
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask anything about your ingredients..."
+              placeholder="Ask Coach anything..."
               className="flex-1 bg-white rounded-2xl py-4 pl-6 pr-16 font-bold text-sm shadow-inner transition-all focus:ring-4 focus:ring-brand-red/5 outline-none"
             />
             <Button 
@@ -132,10 +125,11 @@ export const CoachView: React.FC = () => {
         </form>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3 flex-shrink-0 px-2 md:px-0 pb-2">
         {Object.entries(goalIcons).map(([goal, icon]: [string, any]) => (
           <button 
             key={goal}
+            onClick={() => setInput(goal)}
             className="flex flex-col items-center gap-2 p-4 bg-white/50 rounded-3xl border border-white hover:border-brand-red/20 transition-all group"
           >
             <div className="text-brand-red group-hover:scale-110 transition-transform">
