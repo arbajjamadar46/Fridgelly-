@@ -125,7 +125,7 @@ export const CookingModeView: React.FC<{ recipe: Recipe; onBack: () => void }> =
         <div className="mb-10">
           <div className="flex justify-between items-end mb-2">
              <span className="text-xs font-black uppercase text-brand-red tracking-widest">Step {currentStep + 1} of {steps.length}</span>
-             <span className="text-xs font-black uppercase text-gray-400 tracking-widest">{Math.round((currentStep + 1 / steps.length) * 100)}%</span>
+             <span className="text-xs font-black uppercase text-gray-400 tracking-widest">{Math.round(((currentStep + 1) / steps.length) * 100)}%</span>
           </div>
           <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
              <motion.div 

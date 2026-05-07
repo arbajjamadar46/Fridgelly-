@@ -1,28 +1,19 @@
-import { GoogleGenAI } from "@google/genai";
 import { Ingredient, Recipe, PalateFingerprint } from "../types";
-
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "AIzaSyA10cfV2CrcEl-tEv0QanwFL2veOLm9MmM" });
-const MODEL_NAME = "gemini-2.0-flash";
 
 export const geminiService = {
   async analyzeFridgeImage(base64Image: string): Promise<Ingredient[]> {
-    const prompt = `Analyze this fridge image. Return ONLY valid JSON: { "ingredients": [ { "name": "string", "confidence": number, "category": "string" } ] }. No markdown, no explanation.`;
-    
     try {
-      const result = await ai.models.generateContent({
-        model: MODEL_NAME,
-        contents: [
-          { text: prompt },
-          {
-            inlineData: {
-              data: base64Image.split(',')[1],
-              mimeType: "image/jpeg"
-            }
-          }
-        ]
+      const response = await fetch("/api/gemini/analyze-fridge", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: base64Image }),
       });
-      const text = result.text || "{}";
-      const cleanJson = text.replace(/```json|```/g, "").trim();
+      const data = await response.json();
+      if (data.error) throw new Error(data.error);
+
+      const text = data.text || "{}";
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      const cleanJson = jsonMatch ? jsonMatch[0] : text;
       const parsed = JSON.parse(cleanJson);
       return (parsed.ingredients || []).map((ing: any) => ({ 
         ...ing, 
@@ -35,20 +26,18 @@ export const geminiService = {
   },
 
   async generateRecipes(ingredients: string[], filters: string[], cuisine: string): Promise<Recipe[]> {
-    const prompt = `Generate 4 creative Indian regional recipes using primarily these ingredients: ${ingredients.join(", ")}. 
-    Dietary restrictions: ${filters.join(", ") || "Vegetarian (Default Indian context)"}. 
-    Specific Indian regional style: ${cuisine}. 
-    Focus on authentic Indian flavors, spices, and local home-style cooking techniques.
-    Return ONLY a JSON array, each item: { "title": "string", "matchScore": number, "cookTime": "string", "difficulty": "Easy|Medium|Hard", "calories": number, "description": "string", "ingredients": { "available": ["string"], "missing": ["string"] }, "steps": ["string"], "nutritionFacts": { "calories": number, "protein": number, "carbs": number, "fat": number, "fiber": number }, "tags": ["string"] }. 
-    No markdown, no explanation.`;
-
     try {
-      const result = await ai.models.generateContent({
-        model: MODEL_NAME,
-        contents: prompt
+      const response = await fetch("/api/gemini/generate-recipes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ingredients, filters, cuisine }),
       });
-      const text = result.text || "[]";
-      const cleanJson = text.replace(/```json|```/g, "").trim();
+      const data = await response.json();
+      if (data.error) throw new Error(data.error);
+
+      const text = data.text || "[]";
+      const jsonMatch = text.match(/\[[\s\S]*\]/);
+      const cleanJson = jsonMatch ? jsonMatch[0] : text;
       const parsed = JSON.parse(cleanJson);
       return (Array.isArray(parsed) ? parsed : []).map((r: any) => ({ 
         ...r, 
@@ -61,14 +50,18 @@ export const geminiService = {
   },
 
   async getSubstitutes(ingredient: string): Promise<string[]> {
-    const prompt = `Give 3 common cooking substitutes for ${ingredient}. Return ONLY a JSON string array like ["sub1", "sub2", "sub3"]. No markdown, no explanation.`;
     try {
-      const result = await ai.models.generateContent({
-        model: MODEL_NAME,
-        contents: prompt
+      const response = await fetch("/api/gemini/get-substitutes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ingredient }),
       });
-      const text = result.text || "[]";
-      const cleanJson = text.replace(/```json|```/g, "").trim();
+      const data = await response.json();
+      if (data.error) throw new Error(data.error);
+
+      const text = data.text || "[]";
+      const jsonMatch = text.match(/\[[\s\S]*\]/);
+      const cleanJson = jsonMatch ? jsonMatch[0] : text;
       return JSON.parse(cleanJson);
     } catch (error) {
       console.error("Substitutes fetch failed:", error);
@@ -77,18 +70,18 @@ export const geminiService = {
   },
 
   async morphRecipe(originalSteps: string[], userChange: string): Promise<string[]> {
-    const prompt = `Original steps: ${JSON.stringify(originalSteps)}. 
-    User wants to change: ${userChange}. 
-    Rewrite the remaining steps ONLY to accommodate this change while maintaining flow. 
-    Return ONLY a JSON string array of the updated steps. No markdown, no explanation.`;
-    
     try {
-      const result = await ai.models.generateContent({
-        model: MODEL_NAME,
-        contents: prompt
+      const response = await fetch("/api/gemini/morph-recipe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ originalSteps, userChange }),
       });
-      const text = result.text || "[]";
-      const cleanJson = text.replace(/```json|```/g, "").trim();
+      const data = await response.json();
+      if (data.error) throw new Error(data.error);
+
+      const text = data.text || "[]";
+      const jsonMatch = text.match(/\[[\s\S]*\]/);
+      const cleanJson = jsonMatch ? jsonMatch[0] : text;
       return JSON.parse(cleanJson);
     } catch (error) {
       console.error("Recipe morph failed:", error);
@@ -97,26 +90,18 @@ export const geminiService = {
   },
 
   async decodeDish(base64Image: string, currentInventory: string[]): Promise<Recipe> {
-    const prompt = `Analyze this food photo. Identify: dishName, estimatedCuisine, keyIngredients[], cookingTechniques[], difficulty. 
-    Given user's current fridge inventory: ${currentInventory.join(", ")}, generate a home recipe maximizing available ingredients. Flag must-buy items in missing ingredients. 
-    Return JSON: { "title": "string", "matchScore": number, "cookTime": "string", "difficulty": "Easy|Medium|Hard", "calories": number, "description": "string", "ingredients": { "available": ["string"], "missing": ["string"] }, "steps": ["string"], "nutritionFacts": { "calories": number, "protein": number, "carbs": number, "fat": number, "fiber": number }, "tags": ["string"] }.
-    No markdown, no explanation.`;
-
     try {
-      const result = await ai.models.generateContent({
-        model: MODEL_NAME,
-        contents: [
-          { text: prompt },
-          {
-            inlineData: {
-              data: base64Image.split(',')[1],
-              mimeType: "image/jpeg"
-            }
-          }
-        ]
+      const response = await fetch("/api/gemini/decode-dish", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: base64Image, currentInventory }),
       });
-      const text = result.text || "{}";
-      const cleanJson = text.replace(/```json|```/g, "").trim();
+      const data = await response.json();
+      if (data.error) throw new Error(data.error);
+
+      const text = data.text || "{}";
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      const cleanJson = jsonMatch ? jsonMatch[0] : text;
       return { ...JSON.parse(cleanJson), id: Math.random().toString(36).substr(2, 9), decoded: true };
     } catch (error) {
       console.error("Dish decoding failed:", error);
@@ -125,18 +110,18 @@ export const geminiService = {
   },
 
   async generatePalateFingerprint(history: any[]): Promise<PalateFingerprint> {
-    const prompt = `Based on cooking history: ${JSON.stringify(history)}, describe this user's Indian taste profile. 
-    Use Indian culinary terms and personas (e.g., "Masala Maestro", "Curry Connoisseur").
-    Return ONLY JSON: { "flavorProfile": ["string"], "texturePrefs": ["string"], "cookingPersona": "string", "poeticTagline": "string" }.
-    No markdown, no explanation.`;
-    
     try {
-      const result = await ai.models.generateContent({
-        model: MODEL_NAME,
-        contents: prompt
+      const response = await fetch("/api/gemini/generate-fingerprint", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ history }),
       });
-      const text = result.text || "{}";
-      const cleanJson = text.replace(/```json|```/g, "").trim();
+      const data = await response.json();
+      if (data.error) throw new Error(data.error);
+
+      const text = data.text || "{}";
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      const cleanJson = jsonMatch ? jsonMatch[0] : text;
       return { ...JSON.parse(cleanJson), updatedAt: new Date().toISOString() };
     } catch (error) {
       console.error("Palate fingerprint failed:", error);

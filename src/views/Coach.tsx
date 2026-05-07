@@ -52,7 +52,7 @@ export const CoachView: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto flex flex-col h-[calc(100vh-180px)] md:h-[calc(100vh-220px)] gap-4 md:gap-6 overflow-hidden">
+    <div className="max-w-4xl mx-auto flex flex-col h-[calc(100vh-200px)] md:h-[calc(100vh-220px)] gap-3 md:gap-6 overflow-hidden">
       <div className="flex items-center justify-between flex-shrink-0 px-2 md:px-0">
         <div>
           <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight mb-1">Coach</h2>
@@ -125,7 +125,7 @@ export const CoachView: React.FC = () => {
         </form>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3 flex-shrink-0 px-2 md:px-0 pb-2">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3 flex-shrink-0 px-2 md:px-0 pb-1">
         {Object.entries(goalIcons).map(([goal, icon]: [string, any]) => (
           <button 
             key={goal}
